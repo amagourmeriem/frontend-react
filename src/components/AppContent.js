@@ -36,14 +36,20 @@ export default class AppContent extends React.Component {
                 password: password
             }).then(
             (response) => {
-                setAuthHeader(response.data.token);
-                this.setState({componentToShow: "messages"});
+                if (response.data.token) {
+                    setAuthHeader(response.data.token);
+                    this.setState({componentToShow: "messages"});
+                } else {
+                    throw new Error('Token not found in the response');
+                }
             }).catch(
             (error) => {
+                console.error('Login failed:', error);
                 setAuthHeader(null);
-                this.setState({componentToShow: "welcome"})
+                this.setState({componentToShow: "welcome"});
             }
         );
+
     };
 
     onRegister = (event, firstName, lastName, username, password) => {
