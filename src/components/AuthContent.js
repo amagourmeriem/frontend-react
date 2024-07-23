@@ -32,8 +32,7 @@ export default class AuthContent extends React.Component {
     render() {
         return (
             <div className="row justify-content-md-center">
-
-          <EnginView/>
+                <EnginView/>
             </div>
         );
     };

@@ -1,6 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
-import {getAuthToken, request} from '../../helpers/axios_helper';
+import { getAuthToken, request } from '../../helpers/axios_helper';
+import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const EnginView = () => {
     const [data, setData] = useState([]);
@@ -52,25 +53,26 @@ const EnginView = () => {
                             <td>{engin.matricule}</td>
                             <td>{engin.compteurHoraire}</td>
                             <td>{engin.categorieEngin ? engin.categorieEngin.nom : 'N/A'}</td>
-                            {/* Affichage des données pour débogage */}
                             {console.log('Engin:', engin, 'CategorieEngin:', engin.categorieEngin)}
-                            <td>
-                                <td className="mx2">
-                                    <button onClick={() => handleDetailsClick(engin.id)}
-                                            className="btn btn-info">Détails
-                                    </button>
-                                </td>
-                                <td className="mx2">
-                                    <button className="btn btn-warning">Modifier</button>
-                                </td>
-                                <td className="mx2">
-                                    <button className="btn btn-danger">Supprimer</button>
-                                </td>
+                            <td className="mx-2">
+                                <Link to={`/engin-details/${engin.id}`} className="btn btn-info">
+                                    <FaEye />
+                                </Link>
+                            </td>
+                            <td className="mx-2">
+                                <Link to={`/edit-engin/${engin.id}`} className="btn btn-warning">
+                                    <FaEdit />
+                                </Link>
+                            </td>
+                            <td className="mx-2">
+                                <button className="btn btn-danger">
+                                    <FaTrashAlt />
+                                </button>
                             </td>
                         </tr>
                         {expandedRow === engin.id && (
                             <tr>
-                            <td colSpan="5">
+                                <td colSpan="7">
                                     <div>
                                         <p><strong>État Frein :</strong> {engin.etatFrein}</p>
                                         <p><strong>État Batterie :</strong> {engin.etatBatterie}</p>
@@ -96,6 +98,5 @@ const EnginView = () => {
         </div>
     );
 };
-
 
 export default EnginView;

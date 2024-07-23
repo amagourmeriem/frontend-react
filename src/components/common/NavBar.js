@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const NavBar = ({ login, logout }) => {
     return (
@@ -27,36 +27,42 @@ const NavBar = ({ login, logout }) => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" to="/engins">
+                            <NavLink
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/engins"
+                            >
                                 Liste d'engins
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/add-engins">
+                            <NavLink
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/add-engins"
+                            >
                                 Ajouter Engins
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/demandes">
+                            <NavLink
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/demandes"
+                            >
                                 Liste des demandes
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/add-demande">
+                            <NavLink
+                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/add-demande"
+                            >
                                 Ajouter une demande
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={login}>
-                                Se connecter
-                            </a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={logout}>
-                                Se déconnecter
-                            </a>
+                            </NavLink>
                         </li>
                     </ul>
+                    <div className="d-flex ms-auto">
+                        <button className="btn btn-primary mx-2" onClick={login}>Login</button>
+                        <button className="btn btn-secondary mx-2" onClick={logout}>Logout</button>
+                    </div>
                 </div>
             </div>
         </nav>

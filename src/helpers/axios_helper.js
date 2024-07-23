@@ -1,9 +1,7 @@
 import axios from 'axios';
 
 export const getAuthToken = () => {
-    const token = window.localStorage.getItem('auth_token');
-    console.log('Retrieved token from localStorage:', token); // Vérifiez que le token est bien récupéré
-    return token;
+    return window.localStorage.getItem('auth_token');
 };
 
 export const setAuthHeader = (token) => {
@@ -18,16 +16,18 @@ axios.defaults.baseURL = 'http://localhost:8085';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const request = (method, url, data) => {
+
     let headers = {};
     const token = getAuthToken();
-    if (token !== null && token !== "null") {
-        headers = {'Authorization': `Bearer ${token}`};
+    console.log('Token:', token); // Ajoutez cette ligne pour vérifier le token
+    if (getAuthToken() !== null && getAuthToken() !== "null") {
+        headers = {'Authorization': `Bearer ${getAuthToken()}`};
     }
+
 
     return axios({
         method: method,
         url: url,
         headers: headers,
-        data: data
-    });
+        data: data});
 };
