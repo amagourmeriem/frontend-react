@@ -32,6 +32,7 @@ const EnginView = () => {
         setExpandedRow(expandedRow === enginId ? null : enginId);
     };
 
+
     return (
         <div className="text-center">
             <h2>Liste des Engins</h2>

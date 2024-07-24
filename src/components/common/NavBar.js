@@ -5,7 +5,7 @@ const NavBar = ({ login, logout }) => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">
+                <NavLink className="navbar-brand" to="/">
                     <img
                         src="/images/logo.jpeg"
                         alt="Logo"
@@ -13,7 +13,7 @@ const NavBar = ({ login, logout }) => {
                         height="70"
                         className="d-inline-block align-text-top"
                     />
-                </a>
+                </NavLink>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -21,7 +21,8 @@ const NavBar = ({ login, logout }) => {
                     data-bs-target="#navbarNav"
                     aria-controls="navbarNav"
                     aria-expanded="false"
-                    aria-label="Toggle navigation">
+                    aria-label="Toggle navigation"
+                >
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
@@ -29,7 +30,7 @@ const NavBar = ({ login, logout }) => {
                         <li className="nav-item">
                             <NavLink
                                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                                to="/engins"
+                                to="/view-engins"
                             >
                                 Liste d'engins
                             </NavLink>
@@ -37,9 +38,9 @@ const NavBar = ({ login, logout }) => {
                         <li className="nav-item">
                             <NavLink
                                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                                to="/add-engins"
+                                to="/add-engin"
                             >
-                                Ajouter Engins
+                                Ajouter Engin
                             </NavLink>
                         </li>
                         <li className="nav-item">
