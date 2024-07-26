@@ -8,6 +8,7 @@ import NavBar from "./common/NavBar";
 import Home from "./Home";
 import EnginView from "./engin/EnginView";
 import AddEngin from "./engin/AddEngin";
+import EditEngin from "./engin/EditEngin";
 
 class App extends React.Component {
     constructor(props) {
@@ -51,6 +52,14 @@ class App extends React.Component {
                                         path="/view-engins"
                                         element={isAuthenticated ? <EnginView /> : <Navigate to="/" />}
                                     />
+                                    <Route
+                                        path="/view-engins"
+                                        element={isAuthenticated ? <EditEngin /> : <Navigate to="/" />}
+                                    />
+                                    <Route path="/view-engins" element={<EnginView />} />
+                                    <Route path="/edit-engin/:id" element={<EditEngin />} />
+
+
                                 </Routes>
                             </div>
                         </div>

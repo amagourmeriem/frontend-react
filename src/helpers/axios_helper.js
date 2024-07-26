@@ -4,6 +4,7 @@ export const getAuthToken = () => {
     return window.localStorage.getItem('auth_token');
 };
 
+
 export const setAuthHeader = (token) => {
     if (token !== null) {
         window.localStorage.setItem("auth_token", token);
@@ -35,3 +36,5 @@ export const request = (method, url, data) => {
         data: data
     });
 };
+
+

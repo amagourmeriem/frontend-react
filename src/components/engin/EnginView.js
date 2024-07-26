@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuthToken, request } from '../../helpers/axios_helper';
 import { FaEdit, FaEye, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const EnginView = () => {
     const [data, setData] = useState([]);
@@ -28,10 +29,27 @@ const EnginView = () => {
         fetchData();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+            const token = getAuthToken();
+            if (!token) {
+                console.error('Token is missing');
+                return;
+            }
+            await axios.delete(`http://localhost:8085/engins/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            fetchData();
+        } catch (error) {
+            console.error('Error deleting engin:', error);
+        }
+    };
+
     const handleDetailsClick = (enginId) => {
         setExpandedRow(expandedRow === enginId ? null : enginId);
     };
-
 
     return (
         <div className="text-center">
@@ -66,7 +84,7 @@ const EnginView = () => {
                                 </Link>
                             </td>
                             <td className="mx-2">
-                                <button className="btn btn-danger">
+                                <button className="btn btn-danger" onClick={() => handleDelete(engin.id)}>
                                     <FaTrashAlt />
                                 </button>
                             </td>

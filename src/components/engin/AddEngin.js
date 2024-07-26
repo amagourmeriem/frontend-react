@@ -20,7 +20,7 @@ const AddEngin = () => {
         etatKlaxon: "oui",
         etatCablage: "oui",
         etatVitesse: "oui",
-        observationsGenerales: "oui",
+        observationsGenerales: "",
         categorieEnginId: ""
     });
 
@@ -263,17 +263,15 @@ const AddEngin = () => {
 
                 <div className="input-group mb-5">
                     <label className="input-group-text" htmlFor="observationsGenerales">Observations Générales</label>
-                    <select
+                    <input
                         className="form-control col-sm-6"
                         name="observationsGenerales"
                         id="observationsGenerales"
                         required
                         value={engin.observationsGenerales}
                         onChange={(e) => handleInputChange(e)}
-                    >
-                        <option value="oui">Oui</option>
-                        <option value="non">Non</option>
-                    </select>
+                    />
+
                 </div>
 
                 <div className="input-group mb-5">
@@ -307,4 +305,3 @@ const AddEngin = () => {
 };
 
 export default AddEngin;
-
