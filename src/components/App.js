@@ -5,10 +5,10 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AppContent from './AppContent';
 import NavBar from "./common/NavBar";
-import Home from "./Home";
 import EnginView from "./engin/EnginView";
 import AddEngin from "./engin/AddEngin";
 import EditEngin from "./engin/EditEngin";
+import DetailsEngin from "./engin/DetailsEngin";
 
 class App extends React.Component {
     constructor(props) {
@@ -58,8 +58,7 @@ class App extends React.Component {
                                     />
                                     <Route path="/view-engins" element={<EnginView />} />
                                     <Route path="/edit-engin/:id" element={<EditEngin />} />
-
-
+                                    <Route path="/engin-details/:id" element={<DetailsEngin />} />
                                 </Routes>
                             </div>
                         </div>

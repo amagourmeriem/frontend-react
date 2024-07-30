@@ -57,6 +57,7 @@ const EnginView = () => {
             <table className="table table-bordered table-hover shadow">
                 <thead>
                 <tr className="text-center">
+                    <th>Image</th>
                     <th>Code</th>
                     <th>Matricule</th>
                     <th>Compteur Horaire</th>
@@ -66,8 +67,23 @@ const EnginView = () => {
                 </thead>
                 <tbody className="text-center">
                 {data.map((engin) => (
-                    <>
-                        <tr key={engin.id}>
+                    <React.Fragment key={engin.id}>
+                        <tr>
+                            <td>
+                                {engin.image ? (
+                                    <img
+                                        src={`http://localhost:8085/engins/uploads/${engin.image}`}
+                                        alt="Engin"
+                                        style={{width: '100px', height: '100px'}} // Ajustez la taille ici
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = 'default_image_path.jpg'; // Remplacez par le chemin de votre image par défaut
+                                        }}
+                                    />
+                                ) : (
+                                    <span>No Image</span>
+                                )}
+                            </td>
                             <td>{engin.code}</td>
                             <td>{engin.matricule}</td>
                             <td>{engin.compteurHoraire}</td>
@@ -91,7 +107,7 @@ const EnginView = () => {
                         </tr>
                         {expandedRow === engin.id && (
                             <tr>
-                                <td colSpan="7">
+                                <td colSpan="8">
                                     <div>
                                         <p><strong>État Frein :</strong> {engin.etatFrein}</p>
                                         <p><strong>État Batterie :</strong> {engin.etatBatterie}</p>
@@ -110,7 +126,7 @@ const EnginView = () => {
                                 </td>
                             </tr>
                         )}
-                    </>
+                    </React.Fragment>
                 ))}
                 </tbody>
             </table>

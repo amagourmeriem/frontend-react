@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getAuthToken } from "../../helpers/axios_helper";
 
 const AddEngin = () => {
     let navigate = useNavigate();
@@ -21,26 +22,59 @@ const AddEngin = () => {
         etatCablage: "oui",
         etatVitesse: "oui",
         observationsGenerales: "",
-        categorieEnginId: ""
+        categorieEnginId: "",
+        image: null
     });
 
     const handleInputChange = (e) => {
+        const { name, value, files } = e.target;
         setEngin({
             ...engin,
-            [e.target.name]: e.target.value,
+            [name]: files ? files[0] : value,
         });
     };
 
     const saveEngin = async (e) => {
         e.preventDefault();
-        await axios.post("http://localhost:8085/engins", engin);
-        navigate("/view-engins"); // Rediriger vers /view-engins
+        const formData = new FormData();
+        Object.keys(engin).forEach(key => {
+            formData.append(key, engin[key]);
+        });
+
+        const token = getAuthToken();
+
+        try {
+            const response = await axios.post("http://localhost:8085/engins", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            navigate("/view-engins");
+        } catch (error) {
+            console.error("Error:", error.response || error.message);
+            if (error.response) {
+                console.log("Error Response Data:", error.response.data);
+                console.log("Error Response Status:", error.response.status);
+                console.log("Error Response Headers:", error.response.headers);
+            }
+        }
     };
 
     return (
         <div className="col-sm-8 py-2 px-5 offset-2 shadow">
             <h2 className="mt-5">Add Engin</h2>
             <form onSubmit={(e) => saveEngin(e)}>
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="image">Image</label>
+                    <input
+                        className="form-control col-sm-6"
+                        type="file"
+                        name="image"
+                        id="image"
+                        onChange={handleInputChange}
+                    />
+                </div>
                 <div className="input-group mb-5">
                     <label className="input-group-text" htmlFor="code">Code</label>
                     <input
