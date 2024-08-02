@@ -29,7 +29,7 @@ const NavBar = ({ login, logout }) => {
                     <ul className="navbar-nav">
                         <li className="nav-item">
                             <NavLink
-                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}
                                 to="/view-engins"
                             >
                                 Liste d'engins
@@ -37,7 +37,7 @@ const NavBar = ({ login, logout }) => {
                         </li>
                         <li className="nav-item">
                             <NavLink
-                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}
                                 to="/add-engin"
                             >
                                 Ajouter Engin
@@ -45,7 +45,15 @@ const NavBar = ({ login, logout }) => {
                         </li>
                         <li className="nav-item">
                             <NavLink
-                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                                className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/categories-engins"
+                            >
+                                Catégories d'Engins
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}
                                 to="/demandes"
                             >
                                 Liste des demandes
@@ -53,10 +61,18 @@ const NavBar = ({ login, logout }) => {
                         </li>
                         <li className="nav-item">
                             <NavLink
-                                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                                to="/add-demande"
+                                className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/envoyer-demande"
                             >
                                 Ajouter une demande
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                className={({isActive}) => `nav-link ${isActive ? 'active' : ''}`}
+                                to="/mes-demandes"
+                            >
+                                Mes demandes
                             </NavLink>
                         </li>
                     </ul>

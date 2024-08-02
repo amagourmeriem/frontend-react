@@ -3,7 +3,10 @@ import { request } from '../helpers/axios_helper';
 import EnginView from "./engin/EnginView";
 import Home from "./Home";
 import AddEngin from "./engin/AddEngin";
-import {Route, Routes} from "react-router-dom"; // Import AddEngin
+import {Route, Routes} from "react-router-dom";
+import DemandeView from "./demandes/DemandeView";
+import DemandeList from "./demandes/DemandeList";
+import DemandeForm from "./demandes/DemandeForm"; // Import AddEngin
 
 export default class AuthContent extends React.Component {
     constructor(props) {
@@ -37,6 +40,9 @@ export default class AuthContent extends React.Component {
                 <Routes>
                     <Route path="/add-engin" element={<AddEngin />} />
                     <Route path="/view-engins" element={<EnginView />} />
+                    <Route path="/demandes" element={<DemandeView />} />
+                    <Route path="/mes-demandes" element={<DemandeList />} />
+                    <Route path="/envoyer-demande" element={<DemandeForm />} />
                 </Routes>
             </div>
         );

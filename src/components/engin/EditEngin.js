@@ -23,31 +23,16 @@ const EditEngin = () => {
         etatCablage: "",
         etatVitesse: "",
         observationsGenerales: "",
-        categorieEnginId: ""
+        categorieEnginId: "",
+        image: null
     });
 
-    const {
-        code,
-        matricule,
-        compteurHoraire,
-        etatFrein,
-        etatBatterie,
-        etatEclairage,
-        etatEssuieGlace,
-        etatTracteur,
-        etatPneumatique,
-        etatTransmission,
-        etatFreinService,
-        etatFreinParking,
-        etatKlaxon,
-        etatCablage,
-        etatVitesse,
-        observationsGenerales,
-        categorieEnginId
-    } = engin;
+    const [categories, setCategories] = useState([]);
+    const { code, matricule, compteurHoraire, etatFrein, etatBatterie, etatEclairage, etatEssuieGlace, etatTracteur, etatPneumatique, etatTransmission, etatFreinService, etatFreinParking, etatKlaxon, etatCablage, etatVitesse, observationsGenerales, categorieEnginId,image  } = engin;
 
     useEffect(() => {
         loadEngin();
+        loadCategories();
     }, []);
 
     const loadEngin = async () => {
@@ -55,16 +40,37 @@ const EditEngin = () => {
         setEngin(result.data);
     };
 
+    const loadCategories = async () => {
+        const result = await axios.get("http://localhost:8085/categories_engins");
+        setCategories(result.data);
+    };
+
     const handleInputChange = (e) => {
+        const { name, value } = e.target;
         setEngin({
             ...engin,
-            [e.target.name]: e.target.value,
+            [name]: value,
+        });
+    };
+
+    const handleFileChange = (e) => {
+        setEngin({
+            ...engin,
+            image: e.target.files[0],
         });
     };
 
     const updateEngin = async (e) => {
         e.preventDefault();
-        await axios.put(`http://localhost:8085/engins/update/${id}`, engin);
+        const formData = new FormData();
+        Object.keys(engin).forEach((key) => {
+            formData.append(key, engin[key]);
+        });
+        await axios.put(`http://localhost:8085/engins/update/${id}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         navigate("/view-engins");
     };
 
@@ -181,7 +187,6 @@ const EditEngin = () => {
                         value={etatTracteur}
                         onChange={(e) => handleInputChange(e)}
                     >
-
                         <option value="Oui">Oui</option>
                         <option value="Non">Non</option>
                     </select>
@@ -231,107 +236,134 @@ const EditEngin = () => {
                         <option value="Non">Non</option>
                     </select>
                 </div>
-                    <div className="input-group mb-5">
-                        <label className="input-group-text" htmlFor="etatFreinParking">État Frein Parking</label>
-                        <select
-                            className="form-control col-sm-6"
-                            name="etatFreinParking"
-                            id="etatFreinParking"
-                            required
-                            value={etatFreinParking}
-                            onChange={(e) => handleInputChange(e)}
-                        >
-                            <option value="Oui">Oui</option>
-                            <option value="Non">Non</option>
-                        </select>
-                    </div>
 
-                    <div className="input-group mb-5">
-                        <label className="input-group-text" htmlFor="etatKlaxon">État Klaxon</label>
-                        <select
-                            className="form-control col-sm-6"
-                            name="etatKlaxon"
-                            id="etatKlaxon"
-                            required
-                            value={etatKlaxon}
-                            onChange={(e) => handleInputChange(e)}
-                        >
-                            <option value="Oui">Oui</option>
-                            <option value="Non">Non</option>
-                        </select>
-                    </div>
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="etatFreinParking">État Frein Parking</label>
+                    <select
+                        className="form-control col-sm-6"
+                        name="etatFreinParking"
+                        id="etatFreinParking"
+                        required
+                        value={etatFreinParking}
+                        onChange={(e) => handleInputChange(e)}
+                    >
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                    </select>
+                </div>
 
-                    <div className="input-group mb-5">
-                        <label className="input-group-text" htmlFor="etatCablage">État Câblage</label>
-                        <select
-                            className="form-control col-sm-6"
-                            name="etatCablage"
-                            id="etatCablage"
-                            required
-                            value={etatCablage}
-                            onChange={(e) => handleInputChange(e)}
-                        >
-                            <option value="Oui">Oui</option>
-                            <option value="Non">Non</option>
-                        </select>
-                    </div>
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="etatKlaxon">État Klaxon</label>
+                    <select
+                        className="form-control col-sm-6"
+                        name="etatKlaxon"
+                        id="etatKlaxon"
+                        required
+                        value={etatKlaxon}
+                        onChange={(e) => handleInputChange(e)}
+                    >
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                    </select>
+                </div>
 
-                    <div className="input-group mb-5">
-                        <label className="input-group-text" htmlFor="etatVitesse">État Vitesse</label>
-                        <select
-                            className="form-control col-sm-6"
-                            name="etatVitesse"
-                            id="etatVitesse"
-                            required
-                            value={etatVitesse}
-                            onChange={(e) => handleInputChange(e)}
-                        >
-                            <option value="Oui">Oui</option>
-                            <option value="Non">Non</option>
-                        </select>
-                    </div>
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="etatCablage">État Câblage</label>
+                    <select
+                        className="form-control col-sm-6"
+                        name="etatCablage"
+                        id="etatCablage"
+                        required
+                        value={etatCablage}
+                        onChange={(e) => handleInputChange(e)}
+                    >
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                    </select>
+                </div>
 
-                    <div className="input-group mb-5">
-                        <label className="input-group-text" htmlFor="observationsGenerales">Observations Générales</label>
-                        <textarea
-                            className="form-control col-sm-6"
-                            name="observationsGenerales"
-                            id="observationsGenerales"
-                            value={observationsGenerales}
-                            onChange={(e) => handleInputChange(e)}
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="etatVitesse">État Vitesse</label>
+                    <select
+                        className="form-control col-sm-6"
+                        name="etatVitesse"
+                        id="etatVitesse"
+                        required
+                        value={etatVitesse}
+                        onChange={(e) => handleInputChange(e)}
+                    >
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
+                    </select>
+                </div>
+
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="observationsGenerales">Observations Générales</label>
+                    <input
+                        className="form-control col-sm-6"
+                        type="text"
+                        name="observationsGenerales"
+                        id="observationsGenerales"
+                        value={observationsGenerales}
+                        onChange={(e) => handleInputChange(e)}
+                    />
+                </div>
+
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="categorieEnginId">Catégorie</label>
+                    <select
+                        className="form-control col-sm-6"
+                        name="categorieEnginId"
+                        id="categorieEnginId"
+                        required
+                        value={categorieEnginId}
+                        onChange={(e) => handleInputChange(e)}
+                    >
+                        {categories.map((categorie) => (
+                            <option key={categorie.id} value={categorie.id}>
+                                {categorie.nom}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="input-group mb-5">
+                    <label className="input-group-text" htmlFor="image">Image</label>
+                    <input
+                        className="form-control col-sm-6"
+                        type="file"
+                        name="image"
+                        id="image"
+                        onChange={handleFileChange}
+                    />
+                </div>
+
+                {image && (
+                    <div className="mb-5">
+                        <img
+                            src={`http://localhost:8085/engins/uploads/${image}`}
+                            alt="engin"
+                            className="rounded img-fluid"
+                            style={{ width: 150 }}
                         />
                     </div>
+                )}
 
-                    <div className="input-group mb-5">
-                        <label className="input-group-text" htmlFor="categorieEnginId">Catégorie</label>
-                        <input
-                            className="form-control col-sm-6"
-                            type="text"
-                            name="categorieEnginId"
-                            id="categorieEnginId"
-                            required
-                            value={categorieEnginId}
-                            onChange={(e) => handleInputChange(e)}
-                        />
+                <div className="row mb-5">
+                    <div className="col-sm-2">
+                        <button type="submit" className="btn btn-outline-success btn-lg">
+                            Enregister
+                        </button>
                     </div>
-
-                    <div className="row mb-5">
-                        <div className="col-sm-2">
-                            <button type="submit" className="btn btn-outline-success btn-lg">
-                                Save
-                            </button>
-                        </div>
-
-                        <div className="col-sm-2">
-                            <Link to={"/view-engins"} className="btn btn-outline-warning btn-lg">
-                                Cancel
-                            </Link>
-                        </div>
+                    <div className="col-sm-2">
+                        <Link to={"/view-engins"} className="btn btn-outline-warning btn-lg">
+                            Annuler
+                        </Link>
                     </div>
+                </div>
             </form>
         </div>
-);
+    );
 };
 
 export default EditEngin;
-

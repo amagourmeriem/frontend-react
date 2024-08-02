@@ -16,7 +16,11 @@ const EnginView = () => {
                 return;
             }
             console.log('Fetched token in EnginView:', token);
-            const response = await request('GET', '/engins', {});
+            const response = await request('GET', '/engins', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setData(response.data);
             console.log('Fetched data:', response.data);
         } catch (error) {
@@ -43,7 +47,11 @@ const EnginView = () => {
             });
             fetchData();
         } catch (error) {
-            console.error('Error deleting engin:', error);
+            if (error.response && error.response.status === 401) {
+                console.error('Unauthorized: Please check your authentication token.');
+            } else {
+                console.error('Error deleting engin:', error);
+            }
         }
     };
 
@@ -74,10 +82,10 @@ const EnginView = () => {
                                     <img
                                         src={`http://localhost:8085/engins/uploads/${engin.image}`}
                                         alt="Engin"
-                                        style={{width: '100px', height: '100px'}} // Ajustez la taille ici
+                                        style={{ width: '100px', height: '100px' }}
                                         onError={(e) => {
                                             e.target.onerror = null;
-                                            e.target.src = 'default_image_path.jpg'; // Remplacez par le chemin de votre image par défaut
+                                            e.target.src = 'default_image_path.jpg';
                                         }}
                                     />
                                 ) : (
@@ -87,8 +95,7 @@ const EnginView = () => {
                             <td>{engin.code}</td>
                             <td>{engin.matricule}</td>
                             <td>{engin.compteurHoraire}</td>
-                            <td>{engin.categorieEngin ? engin.categorieEngin.nom : 'N/A'}</td>
-                            {console.log('Engin:', engin, 'CategorieEngin:', engin.categorieEngin)}
+                            <td>{engin.categorieEnginNom}</td>
                             <td className="mx-2">
                                 <Link to={`/engin-details/${engin.id}`} className="btn btn-info">
                                     <FaEye />

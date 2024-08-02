@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getAuthToken } from "../../helpers/axios_helper";
 
@@ -23,8 +23,22 @@ const AddEngin = () => {
         etatVitesse: "oui",
         observationsGenerales: "",
         categorieEnginId: "",
-        image: null
+        image: null,
     });
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get("http://localhost:8085/categories_engins");
+                setCategories(response.data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value, files } = e.target;
@@ -44,7 +58,7 @@ const AddEngin = () => {
         const token = getAuthToken();
 
         try {
-            const response = await axios.post("http://localhost:8085/engins", formData, {
+            await axios.post("http://localhost:8085/engins", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -84,7 +98,7 @@ const AddEngin = () => {
                         id="code"
                         required
                         value={engin.code}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     />
                 </div>
 
@@ -97,7 +111,7 @@ const AddEngin = () => {
                         id="matricule"
                         required
                         value={engin.matricule}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     />
                 </div>
 
@@ -110,7 +124,7 @@ const AddEngin = () => {
                         id="compteurHoraire"
                         required
                         value={engin.compteurHoraire}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     />
                 </div>
 
@@ -123,7 +137,7 @@ const AddEngin = () => {
                         id="etatFrein"
                         required
                         value={engin.etatFrein}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -138,7 +152,7 @@ const AddEngin = () => {
                         id="etatBatterie"
                         required
                         value={engin.etatBatterie}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -153,7 +167,7 @@ const AddEngin = () => {
                         id="etatEclairage"
                         required
                         value={engin.etatEclairage}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -168,7 +182,7 @@ const AddEngin = () => {
                         id="etatEssuieGlace"
                         required
                         value={engin.etatEssuieGlace}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -183,7 +197,7 @@ const AddEngin = () => {
                         id="etatTracteur"
                         required
                         value={engin.etatTracteur}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -198,7 +212,7 @@ const AddEngin = () => {
                         id="etatPneumatique"
                         required
                         value={engin.etatPneumatique}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -213,7 +227,7 @@ const AddEngin = () => {
                         id="etatTransmission"
                         required
                         value={engin.etatTransmission}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -228,7 +242,7 @@ const AddEngin = () => {
                         id="etatFreinService"
                         required
                         value={engin.etatFreinService}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -243,7 +257,7 @@ const AddEngin = () => {
                         id="etatFreinParking"
                         required
                         value={engin.etatFreinParking}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -258,7 +272,7 @@ const AddEngin = () => {
                         id="etatKlaxon"
                         required
                         value={engin.etatKlaxon}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -273,7 +287,7 @@ const AddEngin = () => {
                         id="etatCablage"
                         required
                         value={engin.etatCablage}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -288,7 +302,7 @@ const AddEngin = () => {
                         id="etatVitesse"
                         required
                         value={engin.etatVitesse}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     >
                         <option value="oui">Oui</option>
                         <option value="non">Non</option>
@@ -297,42 +311,33 @@ const AddEngin = () => {
 
                 <div className="input-group mb-5">
                     <label className="input-group-text" htmlFor="observationsGenerales">Observations Générales</label>
-                    <input
+                    <textarea
                         className="form-control col-sm-6"
                         name="observationsGenerales"
                         id="observationsGenerales"
-                        required
                         value={engin.observationsGenerales}
-                        onChange={(e) => handleInputChange(e)}
+                        onChange={handleInputChange}
                     />
-
                 </div>
 
                 <div className="input-group mb-5">
                     <label className="input-group-text" htmlFor="categorieEnginId">Catégorie</label>
-                    <input
+                    <select
                         className="form-control col-sm-6"
-                        type="text"
                         name="categorieEnginId"
                         id="categorieEnginId"
                         required
                         value={engin.categorieEnginId}
-                        onChange={(e) => handleInputChange(e)}
-                    />
+                        onChange={handleInputChange}
+                    >
+                        <option value="" disabled>Sélectionnez une catégorie</option>
+                        {categories.map(category => (
+                            <option key={category.id} value={category.id}>{category.nom}</option>
+                        ))}
+                    </select>
                 </div>
 
-                <div className="row mb-5">
-                    <div className="col-sm-2">
-                        <button type="submit" className="btn btn-outline-success btn-lg">
-                            Save
-                        </button>
-                    </div>
-                    <div className="col-sm-2">
-                        <Link to={"/view-engins"} className="btn btn-outline-warning btn-lg">
-                            Cancel
-                        </Link>
-                    </div>
-                </div>
+                <button type="submit" className="btn btn-primary mb-5">Save</button>
             </form>
         </div>
     );
