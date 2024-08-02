@@ -1,5 +1,7 @@
+// components/Categorie/CategoryEnginPage.jsx
+
 import React, { useState, useEffect } from 'react';
-import { request } from '../helpers/axios_helper'; // Assurez-vous que le chemin est correct
+import { request } from '../../helpers/axios_helper'; // Assurez-vous que le chemin est correct
 
 const CategoryEnginPage = () => {
     const [categories, setCategories] = useState([]);
@@ -40,6 +42,20 @@ const CategoryEnginPage = () => {
             });
     };
 
+    const handleDelete = (id) => {
+        request('DELETE', `/categories_engins/${id}`)
+            .then(() => {
+                setCategories(categories.filter(category => category.id !== id));
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression de la catégorie:', error);
+            });
+    };
+
+    const handleEdit = (id) => {
+        // Ajoutez la logique de modification ici
+    };
+
     return (
         <div className="container">
             <h1>Catégories d'Engins</h1>
@@ -69,13 +85,27 @@ const CategoryEnginPage = () => {
                 <button type="submit" className="btn btn-primary">Ajouter Catégorie</button>
             </form>
             <h2>Liste des Catégories</h2>
-            <ul className="list-group">
+            <table className="table">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Nombre d'engins</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
                 {categories.map(category => (
-                    <li key={category.id} className="list-group-item">
-                        {category.nom} - {category.nbrEngin} engins
-                    </li>
+                    <tr key={category.id}>
+                        <td>{category.nom}</td>
+                        <td>{category.nbrEngin}</td>
+                        <td>
+                            <button className="btn btn-warning btn-sm" onClick={() => handleEdit(category.id)}>Modifier</button>
+                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(category.id)}>Supprimer</button>
+                        </td>
+                    </tr>
                 ))}
-            </ul>
+                </tbody>
+            </table>
         </div>
     );
 };

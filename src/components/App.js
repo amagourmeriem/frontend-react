@@ -12,7 +12,7 @@ import DetailsEngin from "./engin/DetailsEngin";
 import DemandeView from './demandes/DemandeView';
 import DemandeList from './demandes/DemandeList';
 import DemandeForm from './demandes/DemandeForm';
-import CategoryEnginPage from "./CategoryEnginPage";
+import CategoryEnginPage from "./Categorie/CategoryEnginPage";
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
