@@ -24,6 +24,7 @@ axios.interceptors.request.use(
         const token = getAuthToken();
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
+            console.log('Token ajouté aux en-têtes :', config.headers['Authorization']);
         }
         return config;
     },

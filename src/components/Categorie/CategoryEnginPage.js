@@ -1,19 +1,20 @@
-// components/Categorie/CategoryEnginPage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { request } from '../../helpers/axios_helper'; // Assurez-vous que le chemin est correct
+import CategoryTable from './CategoryTable';
+import CategoryForm from './CategoryForm';
 
 const CategoryEnginPage = () => {
     const [categories, setCategories] = useState([]);
-    const [nom, setNom] = useState('');
-    const [nbrEngin, setNbrEngin] = useState('');
+    const [currentCategory, setCurrentCategory] = useState(null);
+    const [formVisible, setFormVisible] = useState(false);
 
     useEffect(() => {
-        // Appel API pour récupérer les catégories
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = () => {
         request('GET', '/categories_engins')
             .then(response => {
-                console.log('Réponse API:', response.data); // Ajoutez ce log pour vérifier les données reçues
-                // Assurez-vous que la réponse est un tableau
                 if (Array.isArray(response.data)) {
                     setCategories(response.data);
                 } else {
@@ -24,88 +25,75 @@ const CategoryEnginPage = () => {
             .catch(error => {
                 console.error('Erreur lors de la récupération des catégories:', error);
             });
-    }, []);
+    };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const newCategory = { nom, nbrEngin: parseInt(nbrEngin) };
-
-        request('POST', '/categories_engins', newCategory)
+    const handleAddCategory = (category) => {
+        request('POST', '/categories_engins', category)
             .then(response => {
-                console.log('Catégorie ajoutée:', response.data); // Ajoutez ce log pour vérifier les données envoyées
                 setCategories([...categories, response.data]);
-                setNom('');
-                setNbrEngin('');
+                setFormVisible(false);
             })
             .catch(error => {
                 console.error('Erreur lors de l\'ajout de la catégorie:', error);
             });
     };
 
-    const handleDelete = (id) => {
+    const handleUpdateCategory = (id, category) => {
+        request('PUT', `/categories_engins/${id}`, category)
+            .then(response => {
+                setCategories(categories.map(cat => (cat.id === id ? response.data : cat)));
+                setCurrentCategory(null);
+                setFormVisible(false);
+            })
+            .catch(error => {
+                console.error('Erreur lors de la mise à jour de la catégorie:', error);
+            });
+    };
+
+    const handleDeleteCategory = (id) => {
         request('DELETE', `/categories_engins/${id}`)
             .then(() => {
-                setCategories(categories.filter(category => category.id !== id));
+                setCategories(categories.filter(cat => cat.id !== id));
             })
             .catch(error => {
                 console.error('Erreur lors de la suppression de la catégorie:', error);
             });
     };
 
-    const handleEdit = (id) => {
-        // Ajoutez la logique de modification ici
+    const handleEditClick = (category) => {
+        setCurrentCategory(category);
+        setFormVisible(true);
+    };
+
+    const handleAddClick = () => {
+        setCurrentCategory(null);
+        setFormVisible(true);
+    };
+
+    const handleFormClose = () => {
+        setFormVisible(false);
+        setCurrentCategory(null);
     };
 
     return (
         <div className="container">
             <h1>Catégories d'Engins</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="nom" className="form-label">Nom de la catégorie</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="nom"
-                        value={nom}
-                        onChange={(e) => setNom(e.target.value)}
-                        required
+            {formVisible ? (
+                <CategoryForm
+                    category={currentCategory}
+                    onSave={currentCategory ? handleUpdateCategory : handleAddCategory}
+                    onClose={handleFormClose}
+                />
+            ) : (
+                <>
+                    <button className="btn btn-primary mb-3" onClick={handleAddClick}>Ajouter Catégorie</button>
+                    <CategoryTable
+                        categories={categories}
+                        onEditClick={handleEditClick}
+                        onDeleteClick={handleDeleteCategory}
                     />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="nbrEngin" className="form-label">Nombre d'engins</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="nbrEngin"
-                        value={nbrEngin}
-                        onChange={(e) => setNbrEngin(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary">Ajouter Catégorie</button>
-            </form>
-            <h2>Liste des Catégories</h2>
-            <table className="table">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Nombre d'engins</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {categories.map(category => (
-                    <tr key={category.id}>
-                        <td>{category.nom}</td>
-                        <td>{category.nbrEngin}</td>
-                        <td>
-                            <button className="btn btn-warning btn-sm" onClick={() => handleEdit(category.id)}>Modifier</button>
-                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(category.id)}>Supprimer</button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+                </>
+            )}
         </div>
     );
 };
