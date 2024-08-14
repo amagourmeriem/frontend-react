@@ -27,3 +27,15 @@
       transform: rotate(360deg);
     }
   }
+
+
+#EnginView {
+  background-image: url('/public/images/marsa-port.jpg'); /* Chemin vers votre image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh; /* Hauteur totale de la vue */
+  color: white; /* Couleur du texte en blanc pour un bon contraste */
+  padding: 20px;
+  box-sizing: border-box;
+}

@@ -6,7 +6,9 @@ import AddEngin from "./engin/AddEngin";
 import {Route, Routes} from "react-router-dom";
 import DemandeView from "./demandes/DemandeView";
 import DemandeList from "./demandes/DemandeList";
-import DemandeForm from "./demandes/DemandeForm"; // Import AddEngin
+import DemandeForm from "./demandes/DemandeForm";
+import AffectationForm from "./Affectation/AffectationForm";
+import {Navbar} from "react-bootstrap"; // Import AddEngin
 
 export default class AuthContent extends React.Component {
     constructor(props) {
@@ -15,6 +17,7 @@ export default class AuthContent extends React.Component {
             data: []
         }
     }
+
 
     componentDidMount() {
         request(
@@ -36,6 +39,7 @@ export default class AuthContent extends React.Component {
     render() {
         return (
             <div className="row justify-content-md-center">
+                <Navbar/>
                 <Home/>
                 <Routes>
                     <Route path="/add-engin" element={<AddEngin />} />
@@ -43,6 +47,8 @@ export default class AuthContent extends React.Component {
                     <Route path="/demandes" element={<DemandeView />} />
                     <Route path="/mes-demandes" element={<DemandeList />} />
                     <Route path="/envoyer-demande" element={<DemandeForm />} />
+                    <Route path="/affectation-form/:id" element={<AffectationForm />} />
+
                 </Routes>
             </div>
         );

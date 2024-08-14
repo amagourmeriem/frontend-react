@@ -1,154 +1,202 @@
 import React, { useState, useEffect } from 'react';
-import { request } from "../../helpers/axios_helper";
-import { FaTrashAlt } from "react-icons/fa";
+import { getAuthToken, request } from "../../helpers/axios_helper";
 import { Modal, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import AffectationForm from '../Affectation/AffectationForm';
 import axios from "axios";
 
 const DemandeView = () => {
     const [demandes, setDemandes] = useState([]);
     const [showConfirm, setShowConfirm] = useState(false);
     const [showStatusModal, setShowStatusModal] = useState(false);
+    const [showAffectationModal, setShowAffectationModal] = useState(false);
     const [selectedDemande, setSelectedDemande] = useState(null);
     const [statusAction, setStatusAction] = useState('');
+    const [demandesNonAffectees, setDemandesNonAffectees] = useState([]);
+    const navigate = useNavigate();
+
+    const fetchDemandes = async () => {
+        try {
+            const response = await axios.get("http://localhost:8085/demandes/non-affectees");
+            setDemandes(response.data);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des demandes non affectées:", error);
+        }
+    };
 
     useEffect(() => {
-        request('get', '/demandes')
-            .then(response => setDemandes(response.data))
-            .catch(error => console.error('Error fetching demandes:', error));
+        const fetchDemandes = async () => {
+            try {
+                const response = await axios.get("http://localhost:8085/demandes");
+                setDemandes(response.data);
+            } catch (error) {
+                console.error("Erreur lors de la récupération des demandes:", error);
+            }
+        };
+
+        fetchDemandes();
     }, []);
+
+    const fetchDemandesNonAffectees = () => {
+        axios.get("http://localhost:8085/demandes/non-affectees")
+            .then(response => {
+                setDemandesNonAffectees(response.data);
+            })
+            .catch(error => console.error('Error fetching non-affectees:', error));
+    };
 
     const handleDelete = (id) => {
         setSelectedDemande(id);
         setShowConfirm(true);
     };
 
-    const confirmDelete = () => {
-        if (selectedDemande) {
-            request('delete', `/demandes/${selectedDemande}`)
-                .then(() => {
-                    setDemandes(demandes.filter(demande => demande.id !== selectedDemande));
-                    setShowConfirm(false);
-                    setSelectedDemande(null);
-                })
-                .catch(error => console.error('Error deleting demande:', error));
-        }
-    };
 
     const handleStatusChange = (id) => {
         setSelectedDemande(id);
         setShowStatusModal(true);
     };
 
-    const handleStatusSubmit = (action) => {
-        if (selectedDemande) {
-            request('put', `/demandes/${selectedDemande}`, { status: action.toUpperCase() })
-                .then(response => {
-                    setDemandes(demandes.map(demande =>
-                        demande.id === selectedDemande ? { ...demande, status: response.data.status } : demande
-                    ));
-                    setShowStatusModal(false);
-                    setSelectedDemande(null);
-                })
-                .catch(error => console.error('Error updating demande status:', error));
+    const handleStatusSelect = (e) => {
+        setStatusAction(e.target.value);
+    };
+
+    const confirmStatusChange = async () => {
+        if (selectedDemande && statusAction) {
+            try {
+                const statusUpdateRequest = { status: statusAction };
+
+                await axios.patch(`http://localhost:8085/demandes/${selectedDemande}/status`, statusUpdateRequest, {
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                fetchDemandes(); // Met à jour la liste des demandes
+                setShowStatusModal(false);
+                setSelectedDemande(null);
+                setStatusAction('');
+            } catch (error) {
+                console.error('Error updating demande status:', error.response || error.message);
+            }
         }
     };
 
+    const openAffectationModal = (id) => {
+        setSelectedDemande(id);
+        setShowAffectationModal(true);
+    };
+
+    const refreshDemandes = () => {
+        fetchDemandes(); // Met à jour la liste des demandes
+    };
+
     return (
-        <div className="container mt-4">
-            <h2 className="text-center mb-4">Demandes</h2>
-            <table className="table table-bordered table-hover shadow">
-                <thead className="thead-light">
-                <tr className="text-center">
+        <div className="container mt-5">
+            <h1>Liste des Demandes</h1>
+            <table className="table table-striped">
+                <thead>
+                <tr>
                     <th>ID</th>
-                    <th>Numéro BCI</th>
-                    <th>Département</th>
-                    <th>Demandeur</th>
                     <th>Date de Sortie</th>
-                    <th>Shift</th>
-                    <th>Saule</th>
-                    <th>Observations</th>
-                    <th>Engin</th>
-                    <th>Actions</th>
+                    <th>Département</th>
+                    <th>Catégorie</th>
+                    <th>Demandeur</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
-                <tbody className="text-center">
+                <tbody>
                 {demandes.map(demande => (
                     <tr key={demande.id}>
                         <td>{demande.id}</td>
-                        <td>{demande.numeroBCI}</td>
-                        <td>{demande.nomDepartement}</td>
-                        <td>{demande.nomDemandeur}</td>
                         <td>{new Date(demande.dateSortie).toLocaleDateString()}</td>
-                        <td>{demande.shift}</td>
-                        <td>{demande.saul}</td>
-                        <td>{demande.observations}</td>
-                        <td>{demande.engin ? demande.engin.nom : 'N/A'}</td>
+                        <td>{demande.nomDepartement}</td>
+                        <td>{demande.categorieEnginNom}</td>
+                        <td>{demande.nomDemandeur}</td>
+
                         <td>
-                            <Button
-                                variant="danger"
-                                className="mx-1"
-                                onClick={() => handleDelete(demande.id)}
-                            >
-                                <FaTrashAlt />
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                className="mx-1"
-                                onClick={() => handleStatusChange(demande.id)}
-                            >
-                                Change Status
-                            </Button>
+                            {demande.affecte ? (
+                                <button
+                                    className="btn btn-success"
+                                    disabled
+                                    style={{
+                                        backgroundColor: 'green',
+                                        color: 'white',
+                                        cursor: 'not-allowed'
+                                    }}
+                                >
+                                    Affectée
+                                </button>
+                            ) : (
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => openAffectationModal(demande.id)}
+                                >
+                                    Ajouter une Affectation
+                                </button>
+                            )}
+
+                            {demande.status === 'PENDING' ? (
+                                <button
+                                    className="btn btn-warning ms-2"
+                                    onClick={() => handleStatusChange(demande.id)}
+                                >
+                                    Changer le Statut
+                                </button>
+                            ) : demande.status === 'ACCEPTED' ? (
+                                <button
+                                    className="btn btn-success ms-2"
+                                    disabled
+                                >
+                                    Accepté
+                                </button>
+                            ) : demande.status === 'REJECTED' ? (
+                                <button
+                                    className="btn btn-danger ms-2"
+                                    disabled
+                                >
+                                    Refusé
+                                </button>
+                            ) : null}
                         </td>
+
                     </tr>
                 ))}
                 </tbody>
             </table>
 
-            {/* Confirmation Modal for Delete */}
-            <Modal show={showConfirm} onHide={() => setShowConfirm(false)}>
+            {/* Modal de changement de statut */}
+            <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirm Deletion</Modal.Title>
+                    <Modal.Title>Changer le Statut</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to delete this demande?
+                    <div className="mb-3">
+                        <label className="form-label">Choisissez le nouveau statut :</label>
+                        <select
+                            className="form-select"
+                            value={statusAction}
+                            onChange={handleStatusSelect}
+                        >
+                            <option value="" disabled>En attente</option>
+                            <option value="ACCEPTED">Accepté</option>
+                            <option value="REJECTED">Refusé</option>
+                        </select>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowConfirm(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="danger" onClick={confirmDelete}>
-                        Delete
-                    </Button>
+                    <Button variant="secondary" onClick={() => setShowStatusModal(false)}>Annuler</Button>
+                    <Button variant="primary" onClick={confirmStatusChange}>Confirmer</Button>
                 </Modal.Footer>
             </Modal>
 
-            {/* Status Action Modal */}
-            <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Change Status</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Button
-                        variant="success"
-                        className="mx-2"
-                        onClick={() => handleStatusSubmit('accepted')}
-                    >
-                        Accept
-                    </Button>
-                    <Button
-                        variant="danger"
-                        className="mx-2"
-                        onClick={() => handleStatusSubmit('refused')}
-                    >
-                        Refuse
-                    </Button>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {/* Modal de formulaire d'affectation */}
+            <AffectationForm
+                show={showAffectationModal}
+                handleClose={() => setShowAffectationModal(false)}
+                demandeId={selectedDemande}
+                refreshDemandes={refreshDemandes}
+            />
         </div>
     );
 };

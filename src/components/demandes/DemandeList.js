@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { request } from "../../helpers/axios_helper"; // Assurez-vous que le chemin est correct
-import { Table, Button, Form, Row, Col, Container } from 'react-bootstrap';
+import { request } from "../../helpers/axios_helper";
+import { Table, Button, Form, Container, Row, Col } from 'react-bootstrap';
 
 const DemandeList = () => {
     const [demandes, setDemandes] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategorie, setSelectedCategorie] = useState('');
-    const [formData, setFormData] = useState({
-        numeroBCI: '',
-        nomDepartement: '',
-        dateSortie: '',
-        shift: '',
-        observations: '',
-        status: 'PENDING'
-    });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5); // Nombre d'éléments par page
 
     useEffect(() => {
         const userId = 1; // Remplacez par l'ID de l'utilisateur connecté
@@ -29,35 +24,43 @@ const DemandeList = () => {
             .catch(error => console.error('Error fetching categories:', error));
     }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        request('post', '/demandes', { ...formData, categorieEngin: { id: selectedCategorie } })
-            .then(response => {
-                setDemandes([...demandes, response.data]);
-                setFormData({
-                    numeroBCI: '',
-                    nomDepartement: '',
-                    dateSortie: '',
-                    shift: '',
-                    observations: '',
-                    status: 'PENDING'
-                });
-                setSelectedCategorie('');
-            })
-            .catch(error => console.error('Error submitting demande:', error));
-    };
+    const filteredDemandes = demandes.filter(demande =>
+        demande.numeroBCI.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        demande.nomDepartement.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        demande.shift.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        demande.observations.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentDemandes = filteredDemandes.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(filteredDemandes.length / itemsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <Container>
             <h2 className="my-4">Mes Demandes</h2>
+
+            <Form>
+                <Row className="mb-3">
+                    <Col md={6}>
+                        <Form.Control
+                            type="text"
+                            placeholder="Rechercher..."
+                            value={searchTerm}
+                            onChange={handleSearch}
+                        />
+                    </Col>
+                </Row>
+            </Form>
+
             <Table striped bordered hover>
                 <thead>
                 <tr>
@@ -71,7 +74,7 @@ const DemandeList = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {demandes.map(demande => (
+                {currentDemandes.map(demande => (
                     <tr key={demande.id}>
                         <td>{demande.id}</td>
                         <td>{demande.numeroBCI}</td>
@@ -84,6 +87,19 @@ const DemandeList = () => {
                 ))}
                 </tbody>
             </Table>
+
+            {/* Pagination */}
+            <div className="d-flex justify-content-center my-3">
+                {[...Array(totalPages).keys()].map(number => (
+                    <Button
+                        key={number}
+                        onClick={() => paginate(number + 1)}
+                        className={`mx-1 ${currentPage === number + 1 ? 'btn-primary' : 'btn-secondary'}`}
+                    >
+                        {number + 1}
+                    </Button>
+                ))}
+            </div>
         </Container>
     );
 };

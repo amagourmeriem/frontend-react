@@ -13,6 +13,8 @@ import DemandeView from './demandes/DemandeView';
 import DemandeList from './demandes/DemandeList';
 import DemandeForm from './demandes/DemandeForm';
 import CategoryEnginPage from "./Categorie/CategoryEnginPage";
+import AffectationForm from "./Affectation/AffectationForm";
+import AffectationList from "./Affectation/AffectationList";
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -75,13 +77,8 @@ const App = () => {
                                     path="/categories-engins"
                                     element={isAuthenticated ? <CategoryEnginPage /> : <Navigate to="/" />}
                                 />
-                                <Route path="/view-engins" element={<EnginView />} />
-                                <Route path="/edit-engin/:id" element={<EditEngin />} />
-                                <Route path="/engin-details/:id" element={<DetailsEngin />} />
-                                <Route path="/demandes" element={<DemandeView />} />
-                                <Route path="/mes-demandes/:id" element={<DemandeList />} />
-                                <Route path="/envoyer-demande" element={<DemandeForm />} />
-                                <Route path="/categories-engins" element={<CategoryEnginPage />} />
+                                <Route path="/affectation-form/:id" element={isAuthenticated ? <AffectationForm /> : <Navigate to="/" />} />
+                                <Route path="/affectations" element={isAuthenticated ? <AffectationList /> : <Navigate to="/" />} />
                             </Routes>
                         </div>
                     </div>
