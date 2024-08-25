@@ -1,0 +1,35 @@
+/* LoginForm.css */
+.nav-link {
+    color: #000; /* Couleur noire pour le texte des onglets */
+}
+
+.nav-link.active {
+    background-color: #ff6600; /* Couleur orange pour l'onglet actif */
+    color: #fff; /* Texte blanc pour l'onglet actif */
+}
+
+.tab-content {
+    background-color: #fff; /* Couleur blanche pour le contenu des onglets */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-outline input {
+    border-radius: 8px;
+}
+
+.form-outline label {
+    color: #000000; /* Couleur noire pour les labels */
+}
+
+.btn-orange {
+    background-color: #ff6600; /* Couleur orange pour les boutons */
+    border-color: #ff6600; /* Bordure orange pour les boutons */
+    color: #fff; /* Texte blanc pour les boutons */
+}
+
+.btn-orange:hover {
+    background-color: #e65c00; /* Couleur orange plus foncé au survol */
+    border-color: #e65c00; /* Bordure orange plus foncé au survol */
+}

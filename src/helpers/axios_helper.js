@@ -9,6 +9,7 @@ export const getAuthToken = () => {
 export const setAuthHeader = (token) => {
     if (token !== null) {
         window.localStorage.setItem("auth_token", token);
+
     } else {
         window.localStorage.removeItem("auth_token");
     }
@@ -57,4 +58,18 @@ export const requestWithFile = (method, url, data) => {
             'Content-Type': 'multipart/form-data'
         }
     });
+
+};
+
+export const setupAuthInterceptor = (setIsAuthenticated) => {
+    axios.interceptors.response.use(
+        (response) => {
+            if (response && response.data.token) {
+                setAuthHeader(response.data.token);
+                setIsAuthenticated(true); // Mise à jour de isAuthenticated ici
+            }
+            return response;
+        },
+        (error) => Promise.reject(error)
+    );
 };

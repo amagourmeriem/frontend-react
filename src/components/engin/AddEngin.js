@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getAuthToken } from "../../helpers/axios_helper";
+import NavBar from "../common/NavBar";
 
 const AddEngin = () => {
     let navigate = useNavigate();
@@ -76,7 +77,7 @@ const AddEngin = () => {
     };
 
     return (
-        <div className="col-sm-8 py-2 px-5 offset-2 shadow">
+    <div className="col-sm-8 py-2 px-5 offset-2 shadow">
             <h2 className="mt-5">Add Engin</h2>
             <form onSubmit={(e) => saveEngin(e)}>
                 <div className="input-group mb-5">

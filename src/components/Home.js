@@ -1,5 +1,6 @@
 import React from "react";
 import EnginView from "./engin/EnginView";
+import NavBar from "./common/NavBar";
 
 const Home = () => {
     return (

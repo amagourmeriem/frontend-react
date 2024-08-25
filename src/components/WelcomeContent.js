@@ -40,10 +40,6 @@ export default class WelcomeContent extends React.Component {
                     <div className="container">
                         <h1 className="display-10" style={headerStyle}>Bienvenue sur notre plateforme</h1>
                         <p className="lead" style={paragraphStyle}>
-                            Nous vous offrons une interface simple et intuitive pour gérer vos demandes et suivre vos
-                            équipements en toute facilité.
-                            Connectez-vous pour accéder à toutes les fonctionnalités et passer vos demandes rapidement
-                            et efficacement.
                         </p>
                         <p className="lead" style={paragraphStyle}>
                             Pour profiter pleinement de nos services, veuillez vous connecter ci-dessous. Nous sommes là

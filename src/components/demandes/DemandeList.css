@@ -1,0 +1,49 @@
+/* DemandeList.css */
+.demande-list-container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.search-input {
+    border-radius: 20px;
+    border: 1px solid #ddd;
+}
+
+.custom-table {
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.custom-table thead th {
+    background-color: #ff6600; /* Couleur orange */
+    color: #fff;
+    font-weight: bold;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-table tbody td {
+    vertical-align: middle;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination .page-item {
+    border: 1px solid #ff3b3b; /* Bordure orange */
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #ff3b3b; /* Couleur orange */
+    border-color: #ff3b3b; /* Bordure orange */
+    color: #fff;
+}
+
+.pagination .page-link {
+    color: #000000; /* Couleur du texte orange */
+}
